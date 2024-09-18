@@ -4,10 +4,11 @@ import styles from './Map.module.css'
 import {MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents} from 'react-leaflet'
 import { useEffect, useState } from 'react'
 import { useCities } from '../context/CitiesContext'
+import { useGeolocation } from '../hooks/useGeolocation'
+import Button from "./Button";
+
 
 function Map() {
-
-    
 
     const {cities} = useCities();
 
@@ -18,12 +19,25 @@ function Map() {
     const mapLat = searcParams.get('lat');
     const mapLng = searcParams.get('lng');
 
+    const {
+            isLoading: isLoadingPostition, 
+            position: geolocationPosition, 
+            getPosition,
+        } = useGeolocation();
+
     useEffect(()=>{
         if (mapLat && mapLng) setMapPosition([mapLat,mapLng]);
-    },[mapLat,mapLng])
+    },[mapLat,mapLng]);
+
+    useEffect(() => {
+        if (geolocationPosition) setMapPosition([geolocationPosition.lat, geolocationPosition.lng])
+    },[geolocationPosition])
 
     return (
         <div className={styles.mapContainer} >
+            {!geolocationPosition &&<Button type="position" onClick={getPosition}>
+                {isLoadingPostition ? 'Loading...' : 'Use your position'}
+            </Button>}
              <MapContainer 
                 center={mapPosition} 
                 zoom={6} 
