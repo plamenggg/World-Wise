@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
 import styles from './Map.module.css'
 import {MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents} from 'react-leaflet'
 import { useEffect, useState } from 'react'
 import { useCities } from '../context/CitiesContext'
 import { useGeolocation } from '../hooks/useGeolocation'
 import Button from "./Button";
+import { useUrlPosition } from '../hooks/useUrlPosition'
 
 
 function Map() {
@@ -14,10 +15,7 @@ function Map() {
 
     const [mapPosition, setMapPosition] = useState([40, 0]);
 
-    const [searcParams] = useSearchParams();
-    
-    const mapLat = searcParams.get('lat');
-    const mapLng = searcParams.get('lng');
+    const [mapLat, mapLng] = useUrlPosition();
 
     const {
             isLoading: isLoadingPostition, 
